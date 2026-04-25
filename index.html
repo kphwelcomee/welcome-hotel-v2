@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <title>Welcome Hotel</title>
@@ -7,65 +7,120 @@
 <style>
 body {
   margin: 0;
+  font-family: Arial, sans-serif;
+  background: black;
+  overflow: hidden;
+}
+
+/* BACKGROUND */
+.bg {
+  width: 100vw;
   height: 100vh;
-  background: url('./design.jpg') no-repeat center center;
-  background-size: cover;
-  font-family: 'Segoe UI', sans-serif;
+  object-fit: cover;
 }
 
-/* overlay */
-.overlay {
-  position: relative;
-  width: 100%;
-  height: 100%;
+/* LOGO */
+.logo {
+  position: absolute;
+  top: 5%;
+  left: 5%;
+  width: 200px;
 }
 
-/* NAMA TAMU */
+/* GUEST NAME */
 .guest {
   position: absolute;
-
-  top: 48%;
-  left: 32%;
-
+  top: 52%;
+  left: 30%;
   transform: translate(-50%, -50%);
-
-  font-size: 52px;
+  font-size: 4vw;
   color: #D4AF37;
-
-  font-weight: 600;
-  letter-spacing: 1px;
-
+  font-weight: bold;
   text-align: center;
-  width: 500px;
+  width: 40vw;
+  text-shadow: 0 3px 10px rgba(0,0,0,0.7);
+}
 
-  text-shadow: 0 2px 10px rgba(0,0,0,0.7);
+/* WIFI BOX */
+.box {
+  position: absolute;
+  bottom: 20%;
+  left: 20%;
+  color: white;
+  border: 2px solid #D4AF37;
+  padding: 20px 30px;
+  border-radius: 15px;
+  font-size: 1.5vw;
+  background: rgba(0,0,0,0.4);
+}
+
+/* BREAKFAST */
+.box2 {
+  position: absolute;
+  bottom: 20%;
+  left: 45%;
+  color: white;
+  border: 2px solid #D4AF37;
+  padding: 20px 30px;
+  border-radius: 15px;
+  font-size: 1.5vw;
+  background: rgba(0,0,0,0.4);
+}
+
+/* RESPONSIVE TV BESAR */
+@media (min-width:1600px){
+  .guest { font-size: 70px; }
 }
 </style>
 </head>
 
 <body>
 
-<div class="overlay">
-  <div class="guest" id="guestName">Our Valued Guest</div>
+<!-- BACKGROUND -->
+<img src="bg.jpg" class="bg">
+
+<!-- LOGO -->
+<img src="logo.png" class="logo">
+
+<!-- NAMA TAMU -->
+<div id="guestName" class="guest">Our Valued Guest</div>
+
+<!-- WIFI -->
+<div class="box">
+  WiFi Access<br><br>
+  Network : KutaParadiso<br>
+  Password : 11332510
 </div>
 
+<!-- BREAKFAST -->
+<div class="box2">
+  Breakfast Time<br><br>
+  07.00 – 10.00 AM
+</div>
+
+<!-- FIREBASE -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
 const firebaseConfig = {
-  apiKey: "API_KEY_KAMU",
+  apiKey: "AIzaSyCURdL6FcrTEitATpSh_8LgRgcj6Fi8gw",
   authDomain: "hotel-welcome-f97c0.firebaseapp.com",
   databaseURL: "https://hotel-welcome-f97c0-default-rtdb.asia-southeast1.firebasedatabase.app",
   projectId: "hotel-welcome-f97c0",
+  storageBucket: "hotel-welcome-f97c0.appspot.com",
+  messagingSenderId: "402476476793",
+  appId: "1:402476476793:web:0c828c6086f27a004c27a8"
 };
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
+// ambil room dari URL
 const params = new URLSearchParams(window.location.search);
 const room = params.get("room") || "101";
 
+// ambil data realtime
 const guestRef = ref(db, "rooms/" + room);
 
 onValue(guestRef, (snapshot) => {
@@ -73,11 +128,15 @@ onValue(guestRef, (snapshot) => {
   const el = document.getElementById("guestName");
 
   if (data && data.name) {
-    el.innerText = "Mr/Mrs " + data.name;
+    el.innerText = "Mr/Mrs " + capitalize(data.name);
   } else {
     el.innerText = "Our Valued Guest";
   }
 });
+
+function capitalize(nama) {
+  return nama.charAt(0).toUpperCase() + nama.slice(1);
+}
 </script>
 
 </body>
