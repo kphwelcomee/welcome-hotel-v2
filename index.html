@@ -5,42 +5,58 @@
 <title>Welcome Hotel</title>
 
 <style>
+/* RESET */
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
-
-  /* ✅ pakai gambar design full */
-  background: url('bg.jpg') no-repeat center center;
-  background-size: cover;
-
+  background: black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   height: 100vh;
-  overflow: hidden;
 }
 
-/* 🔥 NAMA TAMU */
+/* FRAME 16:9 (PENTING BANGET) */
+.wrapper {
+  position: relative;
+  width: 100vw;
+  max-width: 1920px;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+
+  background: url('design.jpg') no-repeat center;
+  background-size: cover;
+}
+
+/* 🔥 NAMA TAMU (FINAL POSITION) */
 .guest {
   position: absolute;
 
-  top: 52%;
-  left: 32%;
+  /* posisi disesuaikan dengan design kamu */
+  top: 54%;
+  left: 31%;
 
   transform: translate(-50%, -50%);
 
-  font-size: 4vw;
+  /* ukuran pintar */
+  font-size: clamp(22px, 3vw, 64px);
+
   color: #D4AF37;
-
   font-weight: 600;
+
   text-align: center;
+  width: 38%;
 
-  width: 40vw;
-
-  text-shadow: 0 3px 10px rgba(0,0,0,0.7);
+  letter-spacing: 1px;
+  text-shadow: 0 3px 12px rgba(0,0,0,0.8);
 }
 
-/* 🔥 TV BESAR */
-@media (min-width:1600px){
+/* 🔥 HP fallback */
+@media (max-width: 768px) {
   .guest {
-    font-size: 70px;
+    top: 58%;
+    left: 50%;
+    width: 80%;
+    font-size: 22px;
   }
 }
 </style>
@@ -48,8 +64,9 @@ body {
 
 <body>
 
-<!-- ✅ NAMA TAMU -->
-<div id="guestName" class="guest">Our Valued Guest</div>
+<div class="wrapper">
+  <div id="guestName" class="guest">Our Valued Guest</div>
+</div>
 
 <!-- 🔥 FIREBASE -->
 <script type="module">
@@ -69,11 +86,11 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-// ambil nomor kamar dari URL
+/* ambil room dari URL */
 const params = new URLSearchParams(window.location.search);
 const room = params.get("room") || "101";
 
-// ambil data realtime
+/* realtime data */
 const guestRef = ref(db, "rooms/" + room);
 
 onValue(guestRef, (snapshot) => {
@@ -87,7 +104,6 @@ onValue(guestRef, (snapshot) => {
   }
 });
 
-// kapital huruf depan
 function capitalize(nama) {
   return nama.charAt(0).toUpperCase() + nama.slice(1);
 }
