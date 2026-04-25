@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Admin - Hotel</title>
+
+<style>
+body {
+  margin: 0;
+  background: #0f2027;
+  color: white;
+  font-family: Arial, sans-serif;
+  text-align: center;
+}
+
+.container {
+  margin-top: 80px;
+}
+
+h1 {
+  margin-bottom: 30px;
+}
+
+input {
+  padding: 12px;
+  font-size: 18px;
+  width: 250px;
+  margin: 10px;
+  text-align: center;
+}
+
+button {
+  padding: 12px 20px;
+  font-size: 18px;
+  cursor: pointer;
+  background: gold;
+  border: none;
+  border-radius: 5px;
+}
+
+.status {
+  margin-top: 20px;
+  color: lightgreen;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+  <h1>Reception Control</h1>
+
+  <div>
+    <input type="text" id="roomInput" placeholder="Room Number (ex: 101)">
+  </div>
+
+  <div>
+    <input type="text" id="nameInput" placeholder="Guest Name">
+  </div>
+
+  <div>
+    <button onclick="saveData()">SAVE</button>
+  </div>
+
+  <div class="status" id="status"></div>
+</div>
+
+<!-- 🔥 FIREBASE -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCURdL6FcrTEitATpSh_8LgRgcj6Fi8gw",
+  authDomain: "hotel-welcome-f97c0.firebaseapp.com",
+  databaseURL: "https://hotel-welcome-f97c0-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "hotel-welcome-f97c0",
+  storageBucket: "hotel-welcome-f97c0.appspot.com",
+  messagingSenderId: "402476476793",
+  appId: "1:402476476793:web:0c828c6086f27a004c27a8"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+window.saveData = function() {
+  const room = document.getElementById("roomInput").value.trim();
+  const name = document.getElementById("nameInput").value.trim();
+
+  if (!room || !name) {
+    alert("Isi room & nama dulu");
+    return;
+  }
+
+  set(ref(db, "rooms/" + room), {
+    name: name
+  });
+
+  document.getElementById("status").innerText = "✅ Saved for Room " + room;
+
+  // clear input
+  document.getElementById("nameInput").value = "";
+};
+</script>
+
+</body>
+</html>
