@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
 <title>Welcome Hotel</title>
@@ -7,96 +7,65 @@
 <style>
 body {
   margin: 0;
-  background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
-  color: white;
-  font-family: Arial, sans-serif;
+  height: 100vh;
+  background: url('./design.jpg') no-repeat center center;
+  background-size: cover;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+/* overlay */
+.overlay {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+/* NAMA TAMU */
+.guest {
+  position: absolute;
+
+  top: 48%;
+  left: 32%;
+
+  transform: translate(-50%, -50%);
+
+  font-size: 52px;
+  color: #D4AF37;
+
+  font-weight: 600;
+  letter-spacing: 1px;
+
   text-align: center;
-}
+  width: 500px;
 
-.container {
-  margin-top: 10%;
-}
-
-h1 {
-  font-size: 60px;
-  margin: 10px;
-  text-shadow: 2px 2px 10px rgba(0,0,0,0.5);
-}
-
-h2 {
-  font-size: 50px;
-  color: gold;
-  text-shadow: 2px 2px 10px rgba(0,0,0,0.5);
-}
-
-.info {
-  margin-top: 30px;
-  font-size: 22px;
-}
-
-.input-box {
-  margin-top: 40px;
-}
-
-input {
-  padding: 10px;
-  font-size: 20px;
-  width: 250px;
-  text-align: center;
-}
-
-button {
-  padding: 10px 20px;
-  font-size: 20px;
-  margin-left: 10px;
-  cursor: pointer;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.7);
 }
 </style>
 </head>
 
 <body>
 
-<div class="container">
-  <h1>WELCOME TO</h1>
-  <h1>KUTA PARADISO HOTEL</h1>
-
-  <h2 id="guestName">Our Valued Guest</h2>
-
-  <div class="info">
-    WiFi: KutaParadiso<br>
-    Password: 12345678<br><br>
-    Breakfast: 07.00 – 10.00 AM
-  </div>
-
-  <div class="input-box">
-    <input type="text" id="nameInput" placeholder="Enter Guest Name">
-    <button onclick="setName()">Show</button>
-  </div>
+<div class="overlay">
+  <div class="guest" id="guestName">Our Valued Guest</div>
 </div>
 
-<!-- 🔥 FIREBASE -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCURdL6FcrTEitATpSh_8LgRgcj6Fi8gw",
+  apiKey: "API_KEY_KAMU",
   authDomain: "hotel-welcome-f97c0.firebaseapp.com",
   databaseURL: "https://hotel-welcome-f97c0-default-rtdb.asia-southeast1.firebasedatabase.app",
   projectId: "hotel-welcome-f97c0",
-  storageBucket: "hotel-welcome-f97c0.appspot.com",
-  messagingSenderId: "402476476793",
-  appId: "1:402476476793:web:0c828c6086f27a004c27a8"
 };
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-// ambil room dari URL
 const params = new URLSearchParams(window.location.search);
 const room = params.get("room") || "101";
 
-// ambil data realtime
 const guestRef = ref(db, "rooms/" + room);
 
 onValue(guestRef, (snapshot) => {
@@ -104,37 +73,11 @@ onValue(guestRef, (snapshot) => {
   const el = document.getElementById("guestName");
 
   if (data && data.name) {
-    el.innerText = "Mr/Mrs " + capitalize(data.name);
-
-    // sembunyikan input kalau sudah ada data
-    document.querySelector(".input-box").style.display = "none";
+    el.innerText = "Mr/Mrs " + data.name;
   } else {
     el.innerText = "Our Valued Guest";
   }
 });
-
-// manual input (backup)
-window.setName = function() {
-  const nama = document.getElementById("nameInput").value.trim();
-
-  if (nama) {
-    set(ref(db, "rooms/" + room), {
-      name: nama
-    });
-  }
-};
-
-// ENTER
-document.getElementById("nameInput").addEventListener("keypress", function(e) {
-  if (e.key === "Enter") {
-    setName();
-  }
-});
-
-// kapital huruf
-function capitalize(nama) {
-  return nama.charAt(0).toUpperCase() + nama.slice(1);
-}
 </script>
 
 </body>
