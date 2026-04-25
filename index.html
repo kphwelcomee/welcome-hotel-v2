@@ -20,11 +20,13 @@ body {
 h1 {
   font-size: 60px;
   margin: 10px;
+  text-shadow: 2px 2px 10px rgba(0,0,0,0.5);
 }
 
 h2 {
-  font-size: 40px;
+  font-size: 50px;
   color: gold;
+  text-shadow: 2px 2px 10px rgba(0,0,0,0.5);
 }
 
 .info {
@@ -72,24 +74,67 @@ button {
   </div>
 </div>
 
-<script>
-function setName() {
+<!-- 🔥 FIREBASE -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCURdL6FcrTEitATpSh_8LgRgcj6Fi8gw",
+  authDomain: "hotel-welcome-f97c0.firebaseapp.com",
+  databaseURL: "https://hotel-welcome-f97c0-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "hotel-welcome-f97c0",
+  storageBucket: "hotel-welcome-f97c0.appspot.com",
+  messagingSenderId: "402476476793",
+  appId: "1:402476476793:web:0c828c6086f27a004c27a8"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+// ambil room dari URL
+const params = new URLSearchParams(window.location.search);
+const room = params.get("room") || "101";
+
+// ambil data realtime
+const guestRef = ref(db, "rooms/" + room);
+
+onValue(guestRef, (snapshot) => {
+  const data = snapshot.val();
+  const el = document.getElementById("guestName");
+
+  if (data && data.name) {
+    el.innerText = "Mr/Mrs " + capitalize(data.name);
+
+    // sembunyikan input kalau sudah ada data
+    document.querySelector(".input-box").style.display = "none";
+  } else {
+    el.innerText = "Our Valued Guest";
+  }
+});
+
+// manual input (backup)
+window.setName = function() {
   const nama = document.getElementById("nameInput").value.trim();
 
   if (nama) {
-    document.getElementById("guestName").innerText = "Mr/Mrs " + nama;
-
-    // sembunyikan input setelah isi
-    document.querySelector(".input-box").style.display = "none";
+    set(ref(db, "rooms/" + room), {
+      name: nama
+    });
   }
-}
+};
 
-// tekan ENTER langsung jalan
+// ENTER
 document.getElementById("nameInput").addEventListener("keypress", function(e) {
   if (e.key === "Enter") {
     setName();
   }
 });
+
+// kapital huruf
+function capitalize(nama) {
+  return nama.charAt(0).toUpperCase() + nama.slice(1);
+}
 </script>
 
 </body>
