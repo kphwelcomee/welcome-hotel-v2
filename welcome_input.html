@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Welcome Hotel</title>
+
+<style>
+body {
+  margin: 0;
+  background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+  color: white;
+  font-family: Arial, sans-serif;
+  text-align: center;
+}
+
+.container {
+  margin-top: 10%;
+}
+
+h1 {
+  font-size: 60px;
+  margin: 10px;
+}
+
+h2 {
+  font-size: 40px;
+  color: gold;
+}
+
+.info {
+  margin-top: 30px;
+  font-size: 22px;
+}
+
+.input-box {
+  margin-top: 40px;
+}
+
+input {
+  padding: 10px;
+  font-size: 20px;
+  width: 250px;
+  text-align: center;
+}
+
+button {
+  padding: 10px 20px;
+  font-size: 20px;
+  margin-left: 10px;
+  cursor: pointer;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+  <h1>WELCOME TO</h1>
+  <h1>KUTA PARADISO HOTEL</h1>
+
+  <h2 id="guestName">Our Valued Guest</h2>
+
+  <div class="info">
+    WiFi: KutaParadiso<br>
+    Password: 12345678<br><br>
+    Breakfast: 07.00 – 10.00 AM
+  </div>
+
+  <div class="input-box">
+    <input type="text" id="nameInput" placeholder="Enter Guest Name">
+    <button onclick="setName()">Show</button>
+  </div>
+</div>
+
+<script>
+function setName() {
+  const nama = document.getElementById("nameInput").value.trim();
+
+  if (nama) {
+    document.getElementById("guestName").innerText = "Mr/Mrs " + nama;
+
+    // sembunyikan input setelah isi
+    document.querySelector(".input-box").style.display = "none";
+  }
+}
+
+// tekan ENTER langsung jalan
+document.getElementById("nameInput").addEventListener("keypress", function(e) {
+  if (e.key === "Enter") {
+    setName();
+  }
+});
+</script>
+
+</body>
+</html>
