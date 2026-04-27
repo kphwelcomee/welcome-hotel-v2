@@ -21,7 +21,6 @@ body {
     padding: 20px;
 }
 
-/* CARD */
 .container {
     width: 100%;
     max-width: 420px;
@@ -32,16 +31,13 @@ body {
     box-shadow: 0 10px 30px rgba(0,0,0,0.4);
 }
 
-/* TITLE */
 h1 {
     text-align: center;
     color: white;
     margin-bottom: 25px;
     font-size: 22px;
-    letter-spacing: 1px;
 }
 
-/* INPUT */
 input {
     width: 100%;
     padding: 16px;
@@ -49,10 +45,8 @@ input {
     border-radius: 14px;
     border: none;
     font-size: 16px;
-    outline: none;
 }
 
-/* BUTTON */
 button {
     width: 100%;
     padding: 16px;
@@ -63,19 +57,16 @@ button {
     margin-top: 10px;
 }
 
-/* SAVE BUTTON */
 .save {
     background: linear-gradient(90deg, #f6d365, #fda085);
     color: black;
 }
 
-/* CLEAR BUTTON */
 .clear {
     background: #555;
     color: white;
 }
 
-/* ACTIVE EFFECT */
 button:active {
     transform: scale(0.98);
 }
@@ -94,13 +85,12 @@ button:active {
     <button class="clear" onclick="clearRoom()">CLEAR ROOM</button>
 </div>
 
-<!-- FIREBASE -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
+  apiKey: "AIzaSyCURdL6FcrTEitATpSh_8LgRgcj6Fi8gw",
   authDomain: "hotel-welcome-f97c0.firebaseapp.com",
   databaseURL: "https://hotel-welcome-f97c0-default-rtdb.asia-southeast1.firebasedatabase.app",
   projectId: "hotel-welcome-f97c0",
@@ -112,12 +102,10 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-/* AUTO CAPITALIZE */
 function formatName(name) {
     return name.replace(/\b\w/g, c => c.toUpperCase());
 }
 
-/* SAVE */
 window.save = function() {
     const room = document.getElementById("room").value.trim();
     let name = document.getElementById("name").value.trim();
@@ -133,7 +121,6 @@ window.save = function() {
     document.getElementById("name").value = "";
 }
 
-/* CLEAR ROOM */
 window.clearRoom = function() {
     const room = document.getElementById("room").value.trim();
 
