@@ -16,35 +16,37 @@ body {
     justify-content: center;
     align-items: center;
     height: 100vh;
+    padding: 20px;
 }
 
 /* CARD */
 .container {
-    width: 90%;
+    width: 100%;
     max-width: 420px;
-    padding: 25px;
-    border-radius: 16px;
+    padding: 30px;
+    border-radius: 20px;
 
-    background: rgba(255,255,255,0.05);
-    backdrop-filter: blur(12px);
+    background: rgba(255,255,255,0.06);
+    backdrop-filter: blur(15px);
 
-    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.4);
 }
 
 /* TITLE */
 h2 {
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 25px;
+    font-size: 22px;
 }
 
 /* INPUT */
 input {
     width: 100%;
-    padding: 14px;
-    margin: 10px 0;
+    padding: 18px;
+    margin: 12px 0;
 
     font-size: 18px;
-    border-radius: 10px;
+    border-radius: 12px;
     border: none;
     outline: none;
 }
@@ -52,14 +54,14 @@ input {
 /* BUTTON */
 button {
     width: 100%;
-    padding: 14px;
-    margin-top: 10px;
+    padding: 18px;
+    margin-top: 15px;
 
     font-size: 18px;
-    border-radius: 10px;
+    border-radius: 12px;
     border: none;
 
-    background: gold;
+    background: linear-gradient(135deg, #f7d774, #d4af37);
     color: black;
     font-weight: bold;
 
@@ -73,6 +75,18 @@ button {
     font-size: 15px;
     opacity: 0;
     transition: 0.3s;
+}
+
+/* 📱 EXTRA HP (biar makin nyaman) */
+@media (max-width: 480px) {
+    .container {
+        padding: 25px;
+    }
+
+    input, button {
+        font-size: 17px;
+        padding: 16px;
+    }
 }
 </style>
 </head>
@@ -107,17 +121,17 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-// AUTO FOCUS ROOM
+// AUTO FOCUS
 document.getElementById("room").focus();
 
-// ENTER = PINDAH / SAVE
-document.getElementById("room").addEventListener("keypress", function(e){
+// ENTER FLOW
+document.getElementById("room").addEventListener("keypress", e => {
     if(e.key === "Enter"){
         document.getElementById("name").focus();
     }
 });
 
-document.getElementById("name").addEventListener("keypress", function(e){
+document.getElementById("name").addEventListener("keypress", e => {
     if(e.key === "Enter"){
         saveData();
     }
@@ -137,16 +151,14 @@ window.saveData = function() {
         name: name
     });
 
-    // SIMPAN ROOM TERAKHIR
     localStorage.setItem("lastRoom", room);
 
     showStatus("Saved ✔", "lightgreen");
 
-    // AUTO CLEAR NAME (biar cepat input berikutnya)
     document.getElementById("name").value = "";
 };
 
-// STATUS TANPA POPUP
+// STATUS HALUS
 function showStatus(text, color){
     const status = document.getElementById("status");
     status.innerText = text;
