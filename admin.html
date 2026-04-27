@@ -45,6 +45,7 @@ input {
     border-radius: 14px;
     border: none;
     font-size: 16px;
+    outline: none;
 }
 
 button {
@@ -55,6 +56,7 @@ button {
     font-size: 16px;
     font-weight: bold;
     margin-top: 10px;
+    cursor: pointer;
 }
 
 .save {
@@ -70,6 +72,15 @@ button {
 button:active {
     transform: scale(0.98);
 }
+
+/* STATUS */
+#status {
+    text-align: center;
+    margin-top: 12px;
+    font-size: 14px;
+    opacity: 0;
+    transition: 0.3s;
+}
 </style>
 </head>
 
@@ -78,11 +89,13 @@ button:active {
 <div class="container">
     <h1>Reception Control</h1>
 
-    <input type="text" id="room" placeholder="Room Number (ex: 101)">
-    <input type="text" id="name" placeholder="Guest Name">
+    <input id="room" type="number" placeholder="Room Number (ex: 101)">
+    <input id="name" type="text" placeholder="Guest Name">
 
     <button class="save" onclick="save()">SAVE</button>
     <button class="clear" onclick="clearRoom()">CLEAR ROOM</button>
+
+    <div id="status"></div>
 </div>
 
 <script type="module">
@@ -102,15 +115,36 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
+/* AUTO CAPITALIZE */
 function formatName(name) {
-    return name.replace(/\b\w/g, c => c.toUpperCase());
+    return name
+        .toLowerCase()
+        .split(" ")
+        .map(w => w.charAt(0).toUpperCase() + w.slice(1))
+        .join(" ");
 }
 
+/* STATUS */
+function showStatus(text, color){
+    const s = document.getElementById("status");
+    s.innerText = text;
+    s.style.color = color;
+    s.style.opacity = 1;
+
+    setTimeout(() => {
+        s.style.opacity = 0;
+    }, 1200);
+}
+
+/* SAVE */
 window.save = function() {
     const room = document.getElementById("room").value.trim();
     let name = document.getElementById("name").value.trim();
 
-    if (!room) return;
+    if (!room || !name) {
+        showStatus("Lengkapi data!", "orange");
+        return;
+    }
 
     name = formatName(name);
 
@@ -118,18 +152,51 @@ window.save = function() {
         name: name
     });
 
-    document.getElementById("name").value = "";
-}
+    localStorage.setItem("lastRoom", room);
 
+    showStatus("Saved ✔", "lightgreen");
+
+    document.getElementById("name").value = "";
+};
+
+/* CLEAR */
 window.clearRoom = function() {
     const room = document.getElementById("room").value.trim();
 
-    if (!room) return;
+    if (!room) {
+        showStatus("Masukkan nomor kamar!", "orange");
+        return;
+    }
 
     set(ref(db, "rooms/" + room), {
         name: ""
     });
-}
+
+    showStatus("Room Cleared ✔", "#ff7675");
+};
+
+/* ENTER FLOW */
+document.getElementById("room").addEventListener("keypress", e => {
+    if(e.key === "Enter"){
+        document.getElementById("name").focus();
+    }
+});
+
+document.getElementById("name").addEventListener("keypress", e => {
+    if(e.key === "Enter"){
+        save();
+    }
+});
+
+/* LOAD LAST ROOM + AUTO FOCUS */
+window.onload = function(){
+    document.getElementById("room").focus();
+
+    const lastRoom = localStorage.getItem("lastRoom");
+    if(lastRoom){
+        document.getElementById("room").value = lastRoom;
+    }
+};
 </script>
 
 </body>
