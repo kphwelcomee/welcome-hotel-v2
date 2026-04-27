@@ -58,18 +58,18 @@ body {
 </div>
 
 <script>
-// ambil parameter room dari URL
+// ambil nomor kamar dari URL
 const params = new URLSearchParams(window.location.search);
 const room = params.get("room");
 
-// fallback kalau tidak ada
+// kalau tidak ada room
 if (!room) {
     document.getElementById("guestName").innerText = "Our Valued Guest";
 }
 
-// 🔥 kalau kamu pakai Firebase (yang sebelumnya)
+// 🔥 FIX DATABASE (SUDAH BENAR)
 if (room) {
-    fetch(`https://hotel-welcome-default-rtdb.firebaseio.com/rooms/${room}.json`)
+    fetch(`https://hotel-welcome-f97c0-default-rtdb.asia-southeast1.firebasedatabase.app/rooms/${room}.json`)
     .then(res => res.json())
     .then(data => {
         if (data && data.name) {
