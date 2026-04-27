@@ -15,25 +15,37 @@ body {
     overflow: hidden;
 }
 
-/* CONTAINER */
+/* CONTAINER (SUDAH DIPERBAIKI) */
 #guestContainer {
     position: absolute;
-    top: 53%;
-    left: 32%;
+    top: 50%;
+    left: 30%;
     transform: translate(-50%, -50%);
-    width: 45%;
+    
+    width: 55%;
     text-align: center;
 }
 
 /* TEXT */
 #guestName {
-    font-size: 60px; /* awal saja, nanti auto resize */
+    font-size: 60px;
     font-weight: 700;
     letter-spacing: 0.5px;
     color: #d4af37;
+
     line-height: 1.2;
     word-break: break-word;
+    white-space: normal;
+    max-width: 100%;
+
     text-shadow: 0 3px 10px rgba(0,0,0,0.7);
+}
+
+/* 📺 TV BESAR */
+@media (min-width: 1200px) {
+    #guestName {
+        font-size: 3.5vw;
+    }
 }
 
 /* 📱 HP */
@@ -80,16 +92,16 @@ const room = params.get("room") || "101";
 
 const guestRef = ref(db, "rooms/" + room);
 
-/* 🔥 AUTO RESIZE FUNCTION */
+/* 🔥 AUTO RESIZE */
 function autoResizeText(el) {
-    let maxSize = 70;
-    let minSize = 24;
+    let size = 70;
+    let min = 24;
 
-    el.style.fontSize = maxSize + "px";
+    el.style.fontSize = size + "px";
 
-    while (el.scrollWidth > el.clientWidth && maxSize > minSize) {
-        maxSize -= 2;
-        el.style.fontSize = maxSize + "px";
+    while (el.scrollWidth > el.clientWidth && size > min) {
+        size -= 2;
+        el.style.fontSize = size + "px";
     }
 }
 
@@ -104,7 +116,6 @@ onValue(guestRef, (snapshot) => {
         el.innerText = "Our Valued Guest";
     }
 
-    // jalankan auto resize
     setTimeout(() => {
         autoResizeText(el);
     }, 100);
