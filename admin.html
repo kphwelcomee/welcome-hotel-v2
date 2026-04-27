@@ -9,29 +9,36 @@
 body {
     margin: 0;
     font-family: 'Segoe UI', sans-serif;
-    background: #0f2538;
+    background: linear-gradient(135deg, #0b1c2c, #102c44);
     color: white;
 }
 
-/* HEADER */
-.header {
-    padding: 20px;
-    font-size: 20px;
-    font-weight: bold;
-    background: #0b1c2c;
-    text-align: center;
+/* CONTAINER ATAS TENGAH */
+.container {
+    width: 90%;
+    max-width: 480px;
+    margin: 40px auto 0; /* ⬅️ atas tengah */
+
+    padding: 25px;
+    border-radius: 18px;
+
+    background: rgba(255,255,255,0.06);
+    backdrop-filter: blur(12px);
+
+    box-shadow: 0 12px 30px rgba(0,0,0,0.4);
 }
 
-/* FORM AREA */
-.container {
-    padding: 20px;
+/* TITLE */
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
 }
 
 /* INPUT */
 input {
     width: 100%;
-    padding: 20px;
-    margin-bottom: 15px;
+    padding: 16px;
+    margin: 10px 0;
 
     font-size: 18px;
     border-radius: 12px;
@@ -42,22 +49,34 @@ input {
 /* BUTTON */
 button {
     width: 100%;
-    padding: 20px;
+    padding: 16px;
+    margin-top: 10px;
 
     font-size: 18px;
     border-radius: 12px;
     border: none;
+    font-weight: bold;
 
+    cursor: pointer;
+}
+
+/* SAVE */
+.save {
     background: linear-gradient(135deg, #f7d774, #d4af37);
     color: black;
-    font-weight: bold;
+}
+
+/* CLEAR */
+.clear {
+    background: #444;
+    color: white;
 }
 
 /* STATUS */
 .status {
-    margin-top: 15px;
-    font-size: 14px;
+    margin-top: 12px;
     text-align: center;
+    font-size: 14px;
     opacity: 0;
     transition: 0.3s;
 }
@@ -66,19 +85,21 @@ button {
 
 <body>
 
-<div class="header">Reception Control</div>
-
 <div class="container">
+    <h2>Reception Control</h2>
+
     <input id="room" type="number" placeholder="Room Number (ex: 101)">
     <input id="name" type="text" placeholder="Guest Name">
-    <button onclick="saveData()">SAVE</button>
+
+    <button class="save" onclick="saveData()">SAVE</button>
+    <button class="clear" onclick="clearRoom()">CLEAR ROOM</button>
 
     <div id="status" class="status"></div>
 </div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+import { getDatabase, ref, set, remove } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCURdL6FcrTEitATpSh_8LgRgcj6Fi8gw",
@@ -109,14 +130,26 @@ document.getElementById("name").addEventListener("keypress", e => {
     }
 });
 
+/* 🔥 AUTO CAPITALIZE */
+function capitalizeName(name) {
+    return name
+        .toLowerCase()
+        .split(" ")
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(" ");
+}
+
+/* SAVE */
 window.saveData = function() {
     const room = document.getElementById("room").value.trim();
-    const name = document.getElementById("name").value.trim();
+    let name = document.getElementById("name").value.trim();
 
     if (!room || !name) {
         showStatus("Lengkapi data!", "orange");
         return;
     }
+
+    name = capitalizeName(name); // ⬅️ auto rapihin
 
     set(ref(db, "rooms/" + room), {
         name: name
@@ -129,7 +162,21 @@ window.saveData = function() {
     document.getElementById("name").value = "";
 };
 
-// STATUS
+/* CLEAR ROOM */
+window.clearRoom = function() {
+    const room = document.getElementById("room").value.trim();
+
+    if (!room) {
+        showStatus("Masukkan nomor kamar!", "orange");
+        return;
+    }
+
+    remove(ref(db, "rooms/" + room));
+
+    showStatus("Room Cleared ✔", "#ff7675");
+};
+
+/* STATUS */
 function showStatus(text, color){
     const status = document.getElementById("status");
     status.innerText = text;
@@ -141,7 +188,7 @@ function showStatus(text, color){
     }, 1500);
 }
 
-// LOAD LAST ROOM
+/* LOAD LAST ROOM */
 window.onload = function(){
     const lastRoom = localStorage.getItem("lastRoom");
     if(lastRoom){
