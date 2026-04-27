@@ -15,11 +15,11 @@ body {
 
 /* CONTAINER */
 .container {
-    width: 95%;
-    max-width: 520px;
-    margin: 25px auto 0;
+    width: 100%;
+    max-width: 700px; /* ⬅️ lebih besar */
+    margin: 20px auto 0;
 
-    padding: 30px;
+    padding: 35px 25px;
     border-radius: 20px;
 
     background: rgba(255,255,255,0.06);
@@ -31,18 +31,18 @@ body {
 /* TITLE */
 h2 {
     text-align: center;
-    margin-bottom: 20px;
-    font-size: 24px;
+    margin-bottom: 25px;
+    font-size: 26px;
 }
 
 /* INPUT */
 input {
     width: 100%;
-    padding: 20px;
-    margin: 12px 0;
+    padding: 22px;
+    margin: 14px 0;
 
-    font-size: 20px;
-    border-radius: 14px;
+    font-size: 22px;
+    border-radius: 16px;
     border: none;
     outline: none;
 }
@@ -50,11 +50,11 @@ input {
 /* BUTTON */
 button {
     width: 100%;
-    padding: 20px;
+    padding: 22px;
     margin-top: 12px;
 
-    font-size: 20px;
-    border-radius: 14px;
+    font-size: 22px;
+    border-radius: 16px;
     border: none;
     font-weight: bold;
 
@@ -82,16 +82,27 @@ button {
     transition: 0.3s;
 }
 
-/* MOBILE EXTRA */
-@media (max-width: 480px) {
+/* 🔥 KHUSUS HP (INI YANG BIKIN KAYAK ZOOM) */
+@media (max-width: 768px) {
     .container {
-        width: 96%;
-        padding: 28px;
+        width: 100%;
+        margin: 0;
+        border-radius: 0;
+        padding: 30px 20px;
     }
 
-    input, button {
-        font-size: 20px;
-        padding: 20px;
+    h2 {
+        font-size: 24px;
+    }
+
+    input {
+        font-size: 22px;
+        padding: 22px;
+    }
+
+    button {
+        font-size: 22px;
+        padding: 22px;
     }
 }
 </style>
