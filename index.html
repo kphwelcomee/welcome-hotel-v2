@@ -28,25 +28,56 @@ body {
 
 /* TEXT NAMA */
 #guestName {
-    font-size: clamp(28px, 3vw, 52px);
-    font-weight: 600;
-    color: #d4af37;
+    font-size: clamp(32px, 4.5vw, 90px);
+    font-weight: 700;
+    letter-spacing: 1px;
     
+    color: #d4af37;
     line-height: 1.2;
     word-break: break-word;
     
-    text-shadow: 0 2px 8px rgba(0,0,0,0.6);
+    text-shadow: 0 3px 10px rgba(0,0,0,0.7);
 }
 
-/* garis bawah */
+/* GARIS BAWAH */
 #guestName::after {
     content: "";
     display: block;
     width: 60%;
     height: 2px;
-    margin: 10px auto 0;
+    margin: 12px auto 0;
     background: #d4af37;
     opacity: 0.6;
+}
+
+/* 📺 KHUSUS TV / LAYAR BESAR */
+@media (min-width: 1200px) {
+    #guestName {
+        font-size: 5vw;
+    }
+}
+
+/* 📱 MODE HP */
+@media (max-width: 768px) {
+
+    body {
+        background-position: right center;
+    }
+
+    #guestContainer {
+        top: 55%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 80%;
+    }
+
+    #guestName {
+        font-size: 6vw;
+    }
+
+    #guestName::after {
+        width: 70%;
+    }
 }
 </style>
 </head>
