@@ -1,68 +1,78 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Admin Panel</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Hotel</title>
 
 <style>
 body {
-  font-family: Arial, sans-serif;
-  background: #0b1c2c;
-  color: white;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  margin: 0;
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #0b1c2c, #102c44);
+    color: white;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
 }
 
 /* CARD */
 .container {
-  background: rgba(255,255,255,0.05);
-  padding: 30px;
-  border-radius: 15px;
-  width: 90%;
-  max-width: 400px;
-  text-align: center;
-  backdrop-filter: blur(10px);
+    width: 90%;
+    max-width: 420px;
+    padding: 25px;
+    border-radius: 16px;
+
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(12px);
+
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
 }
 
 /* TITLE */
 h2 {
-  margin-bottom: 20px;
+    text-align: center;
+    margin-bottom: 20px;
 }
 
 /* INPUT */
 input {
-  width: 100%;
-  padding: 12px;
-  margin: 10px 0;
-  font-size: 18px;
-  border-radius: 8px;
-  border: none;
-  outline: none;
+    width: 100%;
+    padding: 14px;
+    margin: 10px 0;
+
+    font-size: 18px;
+    border-radius: 10px;
+    border: none;
+    outline: none;
 }
 
 /* BUTTON */
 button {
-  width: 100%;
-  padding: 12px;
-  font-size: 18px;
-  border: none;
-  border-radius: 8px;
-  background: gold;
-  color: black;
-  cursor: pointer;
-  margin-top: 10px;
+    width: 100%;
+    padding: 14px;
+    margin-top: 10px;
+
+    font-size: 18px;
+    border-radius: 10px;
+    border: none;
+
+    background: gold;
+    color: black;
+    font-weight: bold;
+
+    cursor: pointer;
 }
 
-/* STATUS TEXT */
+/* STATUS */
 .status {
-  margin-top: 15px;
-  font-size: 16px;
-  color: lightgreen;
-  opacity: 0;
-  transition: 0.3s;
+    margin-top: 15px;
+    text-align: center;
+    font-size: 15px;
+    opacity: 0;
+    transition: 0.3s;
 }
 </style>
 </head>
@@ -70,14 +80,14 @@ button {
 <body>
 
 <div class="container">
-  <h2>Admin Input</h2>
+    <h2>Reception Control</h2>
 
-  <input type="text" id="room" placeholder="Room Number (ex: 101)">
-  <input type="text" id="name" placeholder="Guest Name">
+    <input id="room" type="number" placeholder="Room Number (ex: 101)">
+    <input id="name" type="text" placeholder="Guest Name">
 
-  <button onclick="saveData()">SAVE</button>
+    <button onclick="saveData()">SAVE</button>
 
-  <div id="status" class="status">Saved ✔</div>
+    <div id="status" class="status"></div>
 </div>
 
 <script type="module">
@@ -97,31 +107,63 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
+// AUTO FOCUS ROOM
+document.getElementById("room").focus();
+
+// ENTER = PINDAH / SAVE
+document.getElementById("room").addEventListener("keypress", function(e){
+    if(e.key === "Enter"){
+        document.getElementById("name").focus();
+    }
+});
+
+document.getElementById("name").addEventListener("keypress", function(e){
+    if(e.key === "Enter"){
+        saveData();
+    }
+});
+
 window.saveData = function() {
-  const room = document.getElementById("room").value.trim();
-  const name = document.getElementById("name").value.trim();
-  const status = document.getElementById("status");
+    const room = document.getElementById("room").value.trim();
+    const name = document.getElementById("name").value.trim();
+    const status = document.getElementById("status");
 
-  if (!room || !name) {
-    status.innerText = "Lengkapi data!";
-    status.style.color = "orange";
+    if (!room || !name) {
+        showStatus("Lengkapi data!", "orange");
+        return;
+    }
+
+    set(ref(db, "rooms/" + room), {
+        name: name
+    });
+
+    // SIMPAN ROOM TERAKHIR
+    localStorage.setItem("lastRoom", room);
+
+    showStatus("Saved ✔", "lightgreen");
+
+    // AUTO CLEAR NAME (biar cepat input berikutnya)
+    document.getElementById("name").value = "";
+};
+
+// STATUS TANPA POPUP
+function showStatus(text, color){
+    const status = document.getElementById("status");
+    status.innerText = text;
+    status.style.color = color;
     status.style.opacity = 1;
-    return;
-  }
 
-  set(ref(db, "rooms/" + room), {
-    name: name
-  });
+    setTimeout(() => {
+        status.style.opacity = 0;
+    }, 1500);
+}
 
-  // tampilkan status tanpa popup
-  status.innerText = "Saved ✔";
-  status.style.color = "lightgreen";
-  status.style.opacity = 1;
-
-  // hilang otomatis
-  setTimeout(() => {
-    status.style.opacity = 0;
-  }, 2000);
+// LOAD ROOM TERAKHIR
+window.onload = function(){
+    const lastRoom = localStorage.getItem("lastRoom");
+    if(lastRoom){
+        document.getElementById("room").value = lastRoom;
+    }
 };
 </script>
 
