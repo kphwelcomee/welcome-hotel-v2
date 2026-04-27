@@ -3,107 +3,81 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin Hotel</title>
+<title>Reception Control</title>
 
 <style>
-body {
-    margin: 0;
+* {
+    box-sizing: border-box;
     font-family: 'Segoe UI', sans-serif;
-    background: linear-gradient(135deg, #0b1c2c, #102c44);
-    color: white;
 }
 
-/* CONTAINER */
+body {
+    margin: 0;
+    background: linear-gradient(135deg, #0f2a3f, #1f3d55);
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+/* CARD */
 .container {
     width: 100%;
-    max-width: 700px; /* ⬅️ lebih besar */
-    margin: 20px auto 0;
-
-    padding: 35px 25px;
+    max-width: 420px;
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(10px);
     border-radius: 20px;
-
-    background: rgba(255,255,255,0.06);
-    backdrop-filter: blur(12px);
-
-    box-shadow: 0 12px 30px rgba(0,0,0,0.4);
+    padding: 25px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
 }
 
 /* TITLE */
-h2 {
+h1 {
     text-align: center;
+    color: white;
     margin-bottom: 25px;
-    font-size: 26px;
+    font-size: 22px;
+    letter-spacing: 1px;
 }
 
 /* INPUT */
 input {
     width: 100%;
-    padding: 22px;
-    margin: 14px 0;
-
-    font-size: 22px;
-    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 15px;
+    border-radius: 14px;
     border: none;
+    font-size: 16px;
     outline: none;
 }
 
 /* BUTTON */
 button {
     width: 100%;
-    padding: 22px;
-    margin-top: 12px;
-
-    font-size: 22px;
-    border-radius: 16px;
+    padding: 16px;
+    border-radius: 14px;
     border: none;
+    font-size: 16px;
     font-weight: bold;
-
-    cursor: pointer;
+    margin-top: 10px;
 }
 
-/* SAVE */
+/* SAVE BUTTON */
 .save {
-    background: linear-gradient(135deg, #f7d774, #d4af37);
+    background: linear-gradient(90deg, #f6d365, #fda085);
     color: black;
 }
 
-/* CLEAR */
+/* CLEAR BUTTON */
 .clear {
-    background: #444;
+    background: #555;
     color: white;
 }
 
-/* STATUS */
-.status {
-    margin-top: 15px;
-    text-align: center;
-    font-size: 16px;
-    opacity: 0;
-    transition: 0.3s;
-}
-
-/* 🔥 KHUSUS HP (INI YANG BIKIN KAYAK ZOOM) */
-@media (max-width: 768px) {
-    .container {
-        width: 100%;
-        margin: 0;
-        border-radius: 0;
-        padding: 30px 20px;
-    }
-
-    h2 {
-        font-size: 24px;
-    }
-
-    input {
-        font-size: 22px;
-        padding: 22px;
-    }
-
-    button {
-        font-size: 22px;
-        padding: 22px;
-    }
+/* ACTIVE EFFECT */
+button:active {
+    transform: scale(0.98);
 }
 </style>
 </head>
@@ -111,23 +85,22 @@ button {
 <body>
 
 <div class="container">
-    <h2>Reception Control</h2>
+    <h1>Reception Control</h1>
 
-    <input id="room" type="number" placeholder="Room Number (ex: 101)">
-    <input id="name" type="text" placeholder="Guest Name">
+    <input type="text" id="room" placeholder="Room Number (ex: 101)">
+    <input type="text" id="name" placeholder="Guest Name">
 
-    <button class="save" onclick="saveData()">SAVE</button>
+    <button class="save" onclick="save()">SAVE</button>
     <button class="clear" onclick="clearRoom()">CLEAR ROOM</button>
-
-    <div id="status" class="status"></div>
 </div>
 
+<!-- FIREBASE -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getDatabase, ref, set, remove } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCURdL6FcrTEitATpSh_8LgRgcj6Fi8gw",
+  apiKey: "YOUR_API_KEY",
   authDomain: "hotel-welcome-f97c0.firebaseapp.com",
   databaseURL: "https://hotel-welcome-f97c0-default-rtdb.asia-southeast1.firebasedatabase.app",
   projectId: "hotel-welcome-f97c0",
@@ -139,87 +112,37 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-// AUTO FOCUS
-document.getElementById("room").focus();
-
-// ENTER FLOW
-document.getElementById("room").addEventListener("keypress", e => {
-    if(e.key === "Enter"){
-        document.getElementById("name").focus();
-    }
-});
-
-document.getElementById("name").addEventListener("keypress", e => {
-    if(e.key === "Enter"){
-        saveData();
-    }
-});
-
 /* AUTO CAPITALIZE */
-function capitalizeName(name) {
-    return name
-        .toLowerCase()
-        .split(" ")
-        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-        .join(" ");
+function formatName(name) {
+    return name.replace(/\b\w/g, c => c.toUpperCase());
 }
 
 /* SAVE */
-window.saveData = function() {
+window.save = function() {
     const room = document.getElementById("room").value.trim();
     let name = document.getElementById("name").value.trim();
 
-    if (!room || !name) {
-        showStatus("Lengkapi data!", "orange");
-        return;
-    }
+    if (!room) return;
 
-    name = capitalizeName(name);
+    name = formatName(name);
 
     set(ref(db, "rooms/" + room), {
         name: name
     });
 
-    localStorage.setItem("lastRoom", room);
-
-    showStatus("Saved ✔", "lightgreen");
-
     document.getElementById("name").value = "";
-};
+}
 
 /* CLEAR ROOM */
 window.clearRoom = function() {
     const room = document.getElementById("room").value.trim();
 
-    if (!room) {
-        showStatus("Masukkan nomor kamar!", "orange");
-        return;
-    }
+    if (!room) return;
 
-    remove(ref(db, "rooms/" + room));
-
-    showStatus("Room Cleared ✔", "#ff7675");
-};
-
-/* STATUS */
-function showStatus(text, color){
-    const status = document.getElementById("status");
-    status.innerText = text;
-    status.style.color = color;
-    status.style.opacity = 1;
-
-    setTimeout(() => {
-        status.style.opacity = 0;
-    }, 1500);
+    set(ref(db, "rooms/" + room), {
+        name: ""
+    });
 }
-
-/* LOAD LAST ROOM */
-window.onload = function(){
-    const lastRoom = localStorage.getItem("lastRoom");
-    if(lastRoom){
-        document.getElementById("room").value = lastRoom;
-    }
-};
 </script>
 
 </body>
