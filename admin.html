@@ -9,41 +9,29 @@
 body {
     margin: 0;
     font-family: 'Segoe UI', sans-serif;
-    background: linear-gradient(135deg, #0b1c2c, #102c44);
+    background: #0f2538;
     color: white;
+}
 
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
+/* HEADER */
+.header {
     padding: 20px;
-}
-
-/* CARD */
-.container {
-    width: 100%;
-    max-width: 420px;
-    padding: 30px;
-    border-radius: 20px;
-
-    background: rgba(255,255,255,0.06);
-    backdrop-filter: blur(15px);
-
-    box-shadow: 0 15px 40px rgba(0,0,0,0.4);
-}
-
-/* TITLE */
-h2 {
+    font-size: 20px;
+    font-weight: bold;
+    background: #0b1c2c;
     text-align: center;
-    margin-bottom: 25px;
-    font-size: 22px;
+}
+
+/* FORM AREA */
+.container {
+    padding: 20px;
 }
 
 /* INPUT */
 input {
     width: 100%;
-    padding: 18px;
-    margin: 12px 0;
+    padding: 20px;
+    margin-bottom: 15px;
 
     font-size: 18px;
     border-radius: 12px;
@@ -54,8 +42,7 @@ input {
 /* BUTTON */
 button {
     width: 100%;
-    padding: 18px;
-    margin-top: 15px;
+    padding: 20px;
 
     font-size: 18px;
     border-radius: 12px;
@@ -64,41 +51,26 @@ button {
     background: linear-gradient(135deg, #f7d774, #d4af37);
     color: black;
     font-weight: bold;
-
-    cursor: pointer;
 }
 
 /* STATUS */
 .status {
     margin-top: 15px;
+    font-size: 14px;
     text-align: center;
-    font-size: 15px;
     opacity: 0;
     transition: 0.3s;
-}
-
-/* 📱 EXTRA HP (biar makin nyaman) */
-@media (max-width: 480px) {
-    .container {
-        padding: 25px;
-    }
-
-    input, button {
-        font-size: 17px;
-        padding: 16px;
-    }
 }
 </style>
 </head>
 
 <body>
 
-<div class="container">
-    <h2>Reception Control</h2>
+<div class="header">Reception Control</div>
 
+<div class="container">
     <input id="room" type="number" placeholder="Room Number (ex: 101)">
     <input id="name" type="text" placeholder="Guest Name">
-
     <button onclick="saveData()">SAVE</button>
 
     <div id="status" class="status"></div>
@@ -140,7 +112,6 @@ document.getElementById("name").addEventListener("keypress", e => {
 window.saveData = function() {
     const room = document.getElementById("room").value.trim();
     const name = document.getElementById("name").value.trim();
-    const status = document.getElementById("status");
 
     if (!room || !name) {
         showStatus("Lengkapi data!", "orange");
@@ -158,7 +129,7 @@ window.saveData = function() {
     document.getElementById("name").value = "";
 };
 
-// STATUS HALUS
+// STATUS
 function showStatus(text, color){
     const status = document.getElementById("status");
     status.innerText = text;
@@ -170,7 +141,7 @@ function showStatus(text, color){
     }, 1500);
 }
 
-// LOAD ROOM TERAKHIR
+// LOAD LAST ROOM
 window.onload = function(){
     const lastRoom = localStorage.getItem("lastRoom");
     if(lastRoom){
