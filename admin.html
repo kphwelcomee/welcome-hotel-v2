@@ -6,33 +6,79 @@
 
 <style>
 body {
-  font-family: Arial;
+  font-family: Arial, sans-serif;
+  background: #0b1c2c;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
+
+/* CARD */
+.container {
+  background: rgba(255,255,255,0.05);
+  padding: 30px;
+  border-radius: 15px;
+  width: 90%;
+  max-width: 400px;
   text-align: center;
-  margin-top: 100px;
+  backdrop-filter: blur(10px);
 }
 
+/* TITLE */
+h2 {
+  margin-bottom: 20px;
+}
+
+/* INPUT */
 input {
-  padding: 10px;
-  font-size: 20px;
-  margin: 10px;
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0;
+  font-size: 18px;
+  border-radius: 8px;
+  border: none;
+  outline: none;
 }
 
+/* BUTTON */
 button {
-  padding: 10px 20px;
-  font-size: 20px;
+  width: 100%;
+  padding: 12px;
+  font-size: 18px;
+  border: none;
+  border-radius: 8px;
+  background: gold;
+  color: black;
   cursor: pointer;
+  margin-top: 10px;
+}
+
+/* STATUS TEXT */
+.status {
+  margin-top: 15px;
+  font-size: 16px;
+  color: lightgreen;
+  opacity: 0;
+  transition: 0.3s;
 }
 </style>
 </head>
 
 <body>
 
-<h2>Admin Input</h2>
+<div class="container">
+  <h2>Admin Input</h2>
 
-<input type="text" id="room" placeholder="Room Number"><br>
-<input type="text" id="name" placeholder="Guest Name"><br>
+  <input type="text" id="room" placeholder="Room Number (ex: 101)">
+  <input type="text" id="name" placeholder="Guest Name">
 
-<button onclick="saveData()">SAVE</button>
+  <button onclick="saveData()">SAVE</button>
+
+  <div id="status" class="status">Saved ✔</div>
+</div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
@@ -54,9 +100,12 @@ const db = getDatabase(app);
 window.saveData = function() {
   const room = document.getElementById("room").value.trim();
   const name = document.getElementById("name").value.trim();
+  const status = document.getElementById("status");
 
   if (!room || !name) {
-    alert("Isi semua data");
+    status.innerText = "Lengkapi data!";
+    status.style.color = "orange";
+    status.style.opacity = 1;
     return;
   }
 
@@ -64,8 +113,16 @@ window.saveData = function() {
     name: name
   });
 
-  alert("Berhasil disimpan!");
-}
+  // tampilkan status tanpa popup
+  status.innerText = "Saved ✔";
+  status.style.color = "lightgreen";
+  status.style.opacity = 1;
+
+  // hilang otomatis
+  setTimeout(() => {
+    status.style.opacity = 0;
+  }, 2000);
+};
 </script>
 
 </body>
