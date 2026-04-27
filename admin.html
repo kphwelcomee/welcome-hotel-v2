@@ -13,14 +13,14 @@ body {
     color: white;
 }
 
-/* CONTAINER ATAS TENGAH */
+/* CONTAINER */
 .container {
-    width: 90%;
-    max-width: 480px;
-    margin: 40px auto 0; /* ⬅️ atas tengah */
+    width: 95%;
+    max-width: 520px;
+    margin: 25px auto 0;
 
-    padding: 25px;
-    border-radius: 18px;
+    padding: 30px;
+    border-radius: 20px;
 
     background: rgba(255,255,255,0.06);
     backdrop-filter: blur(12px);
@@ -32,16 +32,17 @@ body {
 h2 {
     text-align: center;
     margin-bottom: 20px;
+    font-size: 24px;
 }
 
 /* INPUT */
 input {
     width: 100%;
-    padding: 16px;
-    margin: 10px 0;
+    padding: 20px;
+    margin: 12px 0;
 
-    font-size: 18px;
-    border-radius: 12px;
+    font-size: 20px;
+    border-radius: 14px;
     border: none;
     outline: none;
 }
@@ -49,11 +50,11 @@ input {
 /* BUTTON */
 button {
     width: 100%;
-    padding: 16px;
-    margin-top: 10px;
+    padding: 20px;
+    margin-top: 12px;
 
-    font-size: 18px;
-    border-radius: 12px;
+    font-size: 20px;
+    border-radius: 14px;
     border: none;
     font-weight: bold;
 
@@ -74,11 +75,24 @@ button {
 
 /* STATUS */
 .status {
-    margin-top: 12px;
+    margin-top: 15px;
     text-align: center;
-    font-size: 14px;
+    font-size: 16px;
     opacity: 0;
     transition: 0.3s;
+}
+
+/* MOBILE EXTRA */
+@media (max-width: 480px) {
+    .container {
+        width: 96%;
+        padding: 28px;
+    }
+
+    input, button {
+        font-size: 20px;
+        padding: 20px;
+    }
 }
 </style>
 </head>
@@ -130,7 +144,7 @@ document.getElementById("name").addEventListener("keypress", e => {
     }
 });
 
-/* 🔥 AUTO CAPITALIZE */
+/* AUTO CAPITALIZE */
 function capitalizeName(name) {
     return name
         .toLowerCase()
@@ -149,7 +163,7 @@ window.saveData = function() {
         return;
     }
 
-    name = capitalizeName(name); // ⬅️ auto rapihin
+    name = capitalizeName(name);
 
     set(ref(db, "rooms/" + room), {
         name: name
