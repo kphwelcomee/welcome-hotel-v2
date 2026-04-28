@@ -15,33 +15,32 @@ body {
     overflow: hidden;
 }
 
-/* CONTAINER */
+/* 🔥 AREA KIRI (AUTO CENTER) */
 #guestContainer {
     position: absolute;
-    top: 45%; /* naik sedikit biar pas di bawah HOTEL */
-    left: 30%;
-    transform: translate(-50%, -50%);
+    top: 45%;
+    left: 0;
+    width: 55%; /* 🔥 AREA DESAIN KIRI */
+    transform: translateY(-50%);
     
-    width: 40%;
-    text-align: center;
+    display: flex;
+    justify-content: center;
 }
 
-/* TEXT NAMA */
+/* 🔥 TEXT NAMA */
 #guestName {
     font-size: clamp(28px, 4vw, 70px);
     font-weight: 700;
     color: #d4af37;
 
-    line-height: 1.2;
     text-align: center;
+    line-height: 1.2;
 
     max-width: 80%;
-    margin: 0 auto;
-
     word-break: break-word;
 }
 
-/* RESPONSIVE TV */
+/* TV */
 @media (min-width: 1200px) {
     #guestName {
         font-size: clamp(40px, 3.5vw, 80px);
@@ -51,8 +50,7 @@ body {
 /* HP */
 @media (max-width: 768px) {
     #guestContainer {
-        left: 50%;
-        width: 90%;
+        width: 100%;
     }
 
     #guestName {
