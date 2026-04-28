@@ -8,41 +8,41 @@
 <style>
 body {
     margin: 0;
-    height: 100vh;
-    background-color: black; /* fallback biar ga putih */
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
+    overflow: hidden;
     font-family: 'Segoe UI', sans-serif;
-    display: flex;
-    align-items: center;
-    transition: background-image 0.6s ease-in-out; /* 🔥 smooth */
 }
 
+/* BACKGROUND IMAGE */
+#bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    object-fit: cover;
+    z-index: -1;
+}
+
+/* TEXT */
 #guestContainer {
-    width: 55%;
-    text-align: center;
-    margin-left: 2%;
-    margin-top: 5%;
+    position: absolute;
+    top: 55%;
+    left: 5%;
+    transform: translateY(-50%);
 }
 
 #guestName {
     color: #d4af37;
     font-size: 4vw;
     font-weight: bold;
-    text-shadow: 2px 2px 10px rgba(0,0,0,0.6);
+    text-shadow: 2px 2px 10px rgba(0,0,0,0.7);
 }
 </style>
-
-<!-- preload biar lebih cepat -->
-<link rel="preload" as="image" href="default.jpg">
-<link rel="preload" as="image" href="wedding.jpg">
-<link rel="preload" as="image" href="birthday.jpg">
-<link rel="preload" as="image" href="newyear.jpg">
-
 </head>
 
 <body>
+
+<img id="bg" src="default.jpg">
 
 <div id="guestContainer">
     <div id="guestName">Loading...</div>
@@ -69,22 +69,6 @@ const db = getDatabase(app);
 const params = new URLSearchParams(window.location.search);
 const room = params.get("room") || "101";
 
-// fungsi load background (anti putih)
-function setBackground(theme) {
-    const img = new Image();
-
-    img.src = `${theme}.jpg?v=${Date.now()}`;
-
-    img.onload = () => {
-        document.body.style.backgroundImage = `url('${img.src}')`;
-    };
-
-    img.onerror = () => {
-        // fallback kalau error
-        document.body.style.backgroundImage = `url('default.jpg')`;
-    };
-}
-
 // realtime listener
 onValue(ref(db, "rooms/" + room), (snapshot) => {
     const data = snapshot.val();
@@ -92,10 +76,10 @@ onValue(ref(db, "rooms/" + room), (snapshot) => {
     const name = data?.name || "Our Valued Guest";
     const theme = data?.theme || "default";
 
-    // set background aman
-    setBackground(theme);
+    // SET BACKGROUND (INI YANG FIX)
+    document.getElementById("bg").src = `${theme}.jpg?v=${Date.now()}`;
 
-    // set nama
+    // SET NAMA
     document.getElementById("guestName").innerText = name;
 });
 </script>
