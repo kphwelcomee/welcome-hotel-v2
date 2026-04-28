@@ -15,37 +15,48 @@ body {
     overflow: hidden;
 }
 
-/* CONTAINER (SUDAH DIPERBAIKI) */
+/* CONTAINER */
 #guestContainer {
     position: absolute;
-    top: 47%;
-    left: 30%;
+    top: 45%; /* naik sedikit biar pas di bawah HOTEL */
+    left: 35%;
     transform: translate(-50%, -50%);
     
-    width: 55%;
+    width: 40%;
     text-align: center;
 }
 
-/* TEXT */
+/* TEXT NAMA */
 #guestName {
-    font-size: 60px;
+    font-size: clamp(28px, 4vw, 70px);
     font-weight: 700;
-    letter-spacing: 0.5px;
     color: #d4af37;
 
     line-height: 1.2;
-    word-break: break-word;
-    white-space: normal;
-    max-width: 100%;
+    text-align: center;
 
-    text-shadow: 0 3px 10px rgba(0,0,0,0.7);
+    max-width: 80%;
+    margin: 0 auto;
+
+    word-break: break-word;
 }
 
+/* RESPONSIVE TV */
+@media (min-width: 1200px) {
+    #guestName {
+        font-size: clamp(40px, 3.5vw, 80px);
+    }
+}
 
+/* HP */
+@media (max-width: 768px) {
+    #guestContainer {
+        left: 50%;
+        width: 90%;
     }
 
     #guestName {
-        font-size: 6vw;
+        font-size: clamp(24px, 6vw, 40px);
     }
 }
 </style>
@@ -57,7 +68,6 @@ body {
     <h2 id="guestName">Our Valued Guest</h2>
 </div>
 
-<!-- 🔥 FIREBASE -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
@@ -75,25 +85,13 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
+// ambil nomor kamar dari URL
 const params = new URLSearchParams(window.location.search);
 const room = params.get("room") || "101";
 
 const guestRef = ref(db, "rooms/" + room);
 
-/* 🔥 AUTO RESIZE */
-function autoResizeText(el) {
-    let size = 70;
-    let min = 24;
-
-    el.style.fontSize = size + "px";
-
-    while (el.scrollWidth > el.clientWidth && size > min) {
-        size -= 2;
-        el.style.fontSize = size + "px";
-    }
-}
-
-/* 🔥 REALTIME */
+// 🔥 REALTIME UPDATE
 onValue(guestRef, (snapshot) => {
     const data = snapshot.val();
     const el = document.getElementById("guestName");
@@ -103,10 +101,6 @@ onValue(guestRef, (snapshot) => {
     } else {
         el.innerText = "Our Valued Guest";
     }
-
-    setTimeout(() => {
-        autoResizeText(el);
-    }, 100);
 });
 </script>
 
