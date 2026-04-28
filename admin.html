@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reception Control</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #0f2a3f, #1f3d55);
+    display: flex;
+    justify-content: center;
+    padding-top: 40px;
+}
+
+.container {
+    width: 90%;
+    max-width: 420px;
+    background: rgba(255,255,255,0.05);
+    padding: 25px;
+    border-radius: 20px;
+}
+
+h1 {
+    color: white;
+    text-align: center;
+}
+
+input, select {
+    width: 100%;
+    padding: 15px;
+    margin-top: 10px;
+    border-radius: 12px;
+    border: none;
+    font-size: 16px;
+}
+
+button {
+    width: 100%;
+    padding: 15px;
+    margin-top: 15px;
+    border: none;
+    border-radius: 12px;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.save {
+    background: linear-gradient(90deg, #f6d365, #fda085);
+}
+
+.clear {
+    background: #555;
+    color: white;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <h1>Reception Control</h1>
+
+    <input type="text" id="room" placeholder="Room Number (101)">
+    <input type="text" id="name" placeholder="Guest Name">
+
+    <select id="theme">
+        <option value="default">Default</option>
+        <option value="wedding">Wedding</option>
+        <option value="birthday">Birthday</option>
+        <option value="newyear">New Year</option>
+    </select>
+
+    <button class="save" onclick="save()">SAVE</button>
+    <button class="clear" onclick="clearRoom()">CLEAR ROOM</button>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCURdL6FcrTEitATpSh_8LgRgcj6Fi8gw",
+  authDomain: "hotel-welcome-f97c0.firebaseapp.com",
+  databaseURL: "https://hotel-welcome-f97c0-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "hotel-welcome-f97c0",
+  storageBucket: "hotel-welcome-f97c0.appspot.com",
+  messagingSenderId: "402476476793",
+  appId: "1:402476476793:web:0c828c6086f27a004c27a8"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+function formatName(name) {
+    return name.replace(/\b\w/g, c => c.toUpperCase());
+}
+
+window.save = function() {
+    const room = document.getElementById("room").value.trim();
+    let name = document.getElementById("name").value.trim();
+    const theme = document.getElementById("theme").value;
+
+    if (!room) return;
+
+    name = formatName(name);
+
+    set(ref(db, "rooms/" + room), {
+        name: name,
+        theme: theme
+    });
+
+    document.getElementById("name").value = "";
+}
+
+window.clearRoom = function() {
+    const room = document.getElementById("room").value.trim();
+
+    if (!room) return;
+
+    set(ref(db, "rooms/" + room), {
+        name: "",
+        theme: "default"
+    });
+}
+</script>
+
+</body>
+</html>
