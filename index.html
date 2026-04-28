@@ -1,4 +1,3 @@
- <!-- trigger deploy -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,100 +7,57 @@
 
 <style>
 body {
-    margin: 0;
-    overflow: hidden;
-    font-family: 'Segoe UI', sans-serif;
+  margin: 0;
+  height: 100vh;
+  background-size: cover;
+  background-position: center;
+  font-family: 'Segoe UI', sans-serif;
+  position: relative;
 }
 
-/* BACKGROUND IMAGE */
-#bg {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    object-fit: cover;
-    z-index: -1;
-}
-
-/* TEXT */
-#guestContainer {
-    position: absolute;
-    top: 55%;
-    left: 5%;
-    transform: translateY(-50%);
-}
-
+/* TEXT NAMA TAMU */
 #guestName {
-    color: #d4af37;
-    font-size: 4vw;
-    font-weight: bold;
-    text-shadow: 2px 2px 10px rgba(0,0,0,0.7);
+  position: absolute;
+  color: #d4af37;
+  font-size: 64px;
+  font-weight: bold;
+  text-shadow: 2px 2px 10px rgba(0,0,0,0.6);
+  transform: translate(-50%, -50%);
 }
 </style>
 </head>
 
 <body>
 
-<!-- BACKGROUND -->
-<img id="bg" src="default.jpg">
+<h1 id="guestName">Guest</h1>
 
-<!-- TEXT -->
-<div id="guestContainer">
-    <div id="guestName">Loading...</div>
-</div>
+<script>
+const params = new URLSearchParams(window.location.search);
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+const bg = params.get("bg") || "default.jpg";
+const name = params.get("name") || "Our Valued Guest";
 
-window.addEventListener("DOMContentLoaded", () => {
+// SET NAMA
+const guest = document.getElementById("guestName");
+guest.innerText = name;
 
-const firebaseConfig = {
-  apiKey: "AIzaSyCURdL6FcrTEitATpSh_8LgRgcj6Fi8gw",
-  authDomain: "hotel-welcome-f97c0.firebaseapp.com",
-  databaseURL: "https://hotel-welcome-f97c0-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "hotel-welcome-f97c0",
-  storageBucket: "hotel-welcome-f97c0.appspot.com",
-  messagingSenderId: "402476476793",
-  appId: "1:402476476793:web:0c828c6086f27a004c27a8"
+// SET BACKGROUND
+document.body.style.backgroundImage = `url(${bg})`;
+
+// 🔥 MAPPING POSISI (SUDAH DISESUAIKAN DENGAN GAMBAR KAMU)
+const positionMap = {
+  "birthday.jpg": { x: 32, y: 62 },
+  "newyear.jpg": { x: 34, y: 65 },
+  "wedding.jpg": { x: 30, y: 58 },
+  "default.jpg": { x: 50, y: 50 }
 };
 
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
+// AMBIL POSISI
+const pos = positionMap[bg] || positionMap["default.jpg"];
 
-// ambil room dari URL
-const params = new URLSearchParams(window.location.search);
-const room = params.get("room") || "101";
-
-console.log("ROOM:", room);
-
-// listen realtime
-onValue(ref(db, "rooms/" + room), (snapshot) => {
-    const data = snapshot.val();
-
-    console.log("DATA:", data);
-
-    const name = data?.name || "Our Valued Guest";
-    const theme = data?.theme || "default";
-
-    console.log("THEME:", theme);
-
-    const img = document.getElementById("bg");
-
-    if (!img) {
-        console.error("❌ BG IMAGE NOT FOUND");
-        return;
-    }
-
-    // SET BACKGROUND (AUTO CACHE BUSTER)
-    img.src = `${theme}.jpg?v=${Date.now()}`;
-
-    // SET NAME
-    document.getElementById("guestName").innerText = name;
-});
-
-});
+// APPLY POSISI
+guest.style.left = pos.x + "%";
+guest.style.top = pos.y + "%";
 </script>
 
 </body>
