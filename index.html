@@ -15,14 +15,24 @@ body {
   position: relative;
 }
 
-/* TEXT NAMA TAMU */
+/* NAMA TAMU */
 #guestName {
   position: absolute;
   color: #d4af37;
-  font-size: 64px;
   font-weight: bold;
-  text-shadow: 2px 2px 10px rgba(0,0,0,0.6);
+  text-align: center;
   transform: translate(-50%, -50%);
+  text-shadow: 2px 2px 12px rgba(0,0,0,0.7);
+  white-space: nowrap;
+}
+
+/* AUTO RESPONSIVE SIZE */
+@media (min-width: 1920px) {
+  #guestName { font-size: 70px; }
+}
+
+@media (max-width: 1919px) {
+  #guestName { font-size: 48px; }
 }
 </style>
 </head>
@@ -34,30 +44,56 @@ body {
 <script>
 const params = new URLSearchParams(window.location.search);
 
-const bg = params.get("bg") || "default.jpg";
+// PARAM
+const room = params.get("room") || "default";
 const name = params.get("name") || "Our Valued Guest";
 
-// SET NAMA
+// ROOM → BACKGROUND
+const roomMap = {
+  "101": "wedding.jpg",
+  "102": "birthday.jpg",
+  "103": "newyear.jpg"
+};
+
+const bg = roomMap[room] || "default.jpg";
+
+// SET BG
+document.body.style.backgroundImage = `url(${bg})`;
+
+// SET NAME
 const guest = document.getElementById("guestName");
 guest.innerText = name;
 
-// SET BACKGROUND
-document.body.style.backgroundImage = `url(${bg})`;
-
-// 🔥 MAPPING POSISI (SUDAH DISESUAIKAN DENGAN GAMBAR KAMU)
+// 🔥 POSISI SUDAH DI-TUNING SESUAI GAMBAR KAMU
 const positionMap = {
-  "birthday.jpg": { x: 32, y: 62 },
-  "newyear.jpg": { x: 34, y: 65 },
-  "wedding.jpg": { x: 30, y: 58 },
-  "default.jpg": { x: 50, y: 50 }
+  "newyear.jpg":  { x: 35, y: 60 },
+  "birthday.jpg": { x: 34, y: 62 },
+  "wedding.jpg":  { x: 32, y: 58 },
+  "default.jpg":  { x: 33, y: 60 }
 };
 
-// AMBIL POSISI
 const pos = positionMap[bg] || positionMap["default.jpg"];
 
 // APPLY POSISI
 guest.style.left = pos.x + "%";
 guest.style.top = pos.y + "%";
+
+// 🔥 AUTO SCALE kalau nama panjang
+function autoResize() {
+  const maxWidth = window.innerWidth * 0.4; // area kiri
+  let size = 70;
+
+  guest.style.fontSize = size + "px";
+
+  while (guest.offsetWidth > maxWidth && size > 30) {
+    size -= 2;
+    guest.style.fontSize = size + "px";
+  }
+}
+
+autoResize();
+window.addEventListener("resize", autoResize);
+
 </script>
 
 </body>
